@@ -1,0 +1,49 @@
+# CompilerName=lcc64
+# Mode=optim
+ninja_required_version = 1.3
+
+# Basic folders
+root = .
+builddir = $root\build\win64
+matlabdir = C:\Program Files\MATLAB\R2020a
+startdir = S:\OneDrive - The University of Tokyo\MATLAB_projects\SimulatedAnnealing_until200916\ParallelBars_ActivatingRate_Multi_Analyze
+
+# Toolchain information
+cc = lcc64
+cxx = 
+linker = lcclnk64
+linkerxx = 
+
+cflags =  -nodeclspec -Zp8 -dll -c -I"$matlabdir\sys\lcc64\lcc64\include64" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I"$root" -I"$startdir" -I"$root\interface" -I"$matlabdir\extern\include" -I"." -DMODEL=find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex  
+
+cxxflags =  -I"$root" -I"$startdir" -I"$root\interface" -I"$matlabdir\extern\include" -I"." -DMODEL=find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex  
+
+ldflags =  -dll -L"$matlabdir\sys\lcc64\lcc64\lib64" -L"$matlabdir\extern\lib\win64\microsoft" -entry LibMain libmx.lib libmex.lib libmat.lib libemlrt.lib libcovrt.lib libut.lib libmwmathutil.lib -o find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex.mexw64 -s  find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex.def
+
+# Build Rules
+rule cc
+    command = $cc $cflags $in -Fo$out
+
+rule cxx
+    command = $cxx $cxxflags $in -Fo$out
+
+rule link
+    command = $linker $in $ldflags
+
+rule linkxx
+    command = $linkerxx $in $ldflags
+
+# Build
+build $builddir\rt_nonfinite.obj : cc $root\rt_nonfinite.c
+build $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_data.obj : cc $root\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_data.c
+build $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_initialize.obj : cc $root\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_initialize.c
+build $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_terminate.obj : cc $root\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_terminate.c
+build $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist.obj : cc $root\find_ddrPB_ddthHand_ddthShoulder_ddthWaist.c
+build $builddir\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_api.obj : cc $root\interface\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_api.c
+build $builddir\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex.obj : cc $root\interface\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex.c
+build $builddir\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_info.obj : cc $root\interface\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_info.c
+build $builddir\c_mexapi_version.obj : cc $matlabdir\extern\version\c_mexapi_version.c
+build $builddir\lccstub.obj : cc $matlabdir\sys\lcc64\lcc64\mex\lccstub.c
+
+# Link
+build $root\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex.mexw64 : link $builddir\rt_nonfinite.obj $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_data.obj $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_initialize.obj $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist_terminate.obj $builddir\find_ddrPB_ddthHand_ddthShoulder_ddthWaist.obj $builddir\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_api.obj $builddir\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_mex.obj $builddir\_coder_find_ddrPB_ddthHand_ddthShoulder_ddthWaist_info.obj $builddir\c_mexapi_version.obj $builddir\lccstub.obj 
